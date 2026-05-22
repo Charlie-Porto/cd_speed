@@ -3,7 +3,7 @@
 main()
 {
     #!< TODO: update
-    local cds_backend="$HOME/workspace/projects/cd_speed/build/cds_backend/cds_backend"
+    local cds_backend="/usr/local/bin/cd-speed"
 
     # TODO: implement ability to CRUD dr keywords (*including nested)
     local flags_map=(
@@ -16,15 +16,15 @@ main()
         $cds_backend
         return
     fi
-    local result="$(Scds_backend "$@")"
+    local result="$($cds_backend "$@")"
     if [[ "$result" == cds:* ]]; then
-        local dest dir="${result#*:}"
+        local dest_dir="${result#*:}"
         if [[ ! -d "$dest_dir" ]]; then
             echo "ERROR: output is not a directory: $dest_dir. Aborting."
             return 1
         fi
 
-        cda "$dest_dir"
+        cd "$dest_dir" && ls -G
         return
     fi
     echo "$result"
