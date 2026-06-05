@@ -9,17 +9,17 @@ using json = nlohmann::json;
 
 constexpr char GROUP_ID_CHAR = '$';
 
-const std::unordered_map<std::string, ActionType> option_flag_to_actiontype = {
-    { "--add",    ADD },
-    { "--update", UPDATE },
-    { "--remove", REMOVE },
-    { "--list",   LIST },
+const std::unordered_map<std::string, ActionType> cmd_str_to_enum = {
+    { "add",    ADD    },
+    { "update", UPDATE },
+    { "remove", REMOVE },
+    { "list",   LIST   },
 };
-const std::unordered_map<std::string, ActionType> option_flag_abbrv_to_actiontype = {
-    { "-a",    ADD },
-    { "-u", UPDATE },
-    { "-r", REMOVE },
-    { "-l",   LIST }
+const std::unordered_map<std::string, ActionType> cmd_abbrv_str_to_enum = {
+    { "a", ADD    },
+    { "u", UPDATE },
+    { "r", REMOVE },
+    { "l", LIST   }
 };
 
 
@@ -82,14 +82,14 @@ ActionType actionTypeFromArgs(const std::vector<std::string>& args)
     for (const auto& arg : args)
     {
         const size_t initial_ofc = option_flag_count;
-        const auto it_abbrv = option_flag_abbrv_to_actiontype.find(arg);
-        const auto it_full = option_flag_to_actiontype.find(arg);
-        if (it_abbrv != option_flag_abbrv_to_actiontype.end())
+        const auto it_abbrv = cmd_abbrv_str_to_enum.find(arg);
+        const auto it_full = cmd_str_to_enum.find(arg);
+        if (it_abbrv != cmd_abbrv_str_to_enum.end())
         {
             ++option_flag_count;
             action = it_abbrv->second;
         }
-        else if (it_full != option_flag_to_actiontype.end())
+        else if (it_full != cmd_str_to_enum.end())
         {
             ++option_flag_count;
             action = it_full->second;

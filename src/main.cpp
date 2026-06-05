@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
         case LIST:
             for (size_t i=0; i!=args.size(); ++i)
             {
-                if (args[i] == "-l" || args[i] == "--list")
+                if (args[i] == "list" || args[i] == "l")
                 {
                     args.erase(args.begin()+i);
                     break;
