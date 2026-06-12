@@ -24,9 +24,20 @@ ActionType actionTypeFromArgs( const std::vector<std::string>& args );
 bool parseConfigToJsonObjAndValidate( const std::string& config_file_abs_path
                                     , nlohmann::json& config );
 
-void showConfig( const std::string config_file_abs_path
+void showConfig( const std::string& config_file_abs_path
                , const std::string& user
                , const std::vector<std::string>& kwds={});
 
 std::string cdPathFromDirKwdSequence( const std::vector<std::string>& dir_kwd_seq
                                     , const std::string& config_file_abs_path );
+
+//bool addDirAliasToConfig(
+//    const std::vector<std::string>& preceding_alii
+//  , const std::string& alias
+//  , const std::string& directory_path //! relative to dirs corresponding to preceding alii, if they exist
+//  , const std::string& config_file_abs_path
+//);
+
+bool addDirAliasToConfig( const std::string& config_file_abs_path
+                        , const std::string& user
+                        , const std::vector<std::string>& args);
