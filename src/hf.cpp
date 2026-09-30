@@ -60,7 +60,8 @@ void showPathKwdConfig(json::const_iterator& path_kwd_config, const size_t start
     string tab="";
     for (size_t i=0; i!= start_tabs; ++i)
         tab += "\t";
-    cout << tab << path_kwd_config.key() << "\t" << dirname << '\n';
+    //cout << tab << path_kwd_config.key() << "\t>" << dirname << '\n';
+    cout << tab << path_kwd_config.key() << "\t•" << dirname << '\n';
 
     if (path_kwd_config.value().contains("children")
     && !path_kwd_config.value().at("children").empty())
@@ -116,7 +117,6 @@ bool addDirAliasToConfigCore(
     if (!preceding_alii.empty())
     {
         ptr_to_preceding_alii_config_node = ptrToConfigPathAliasNodeInJson(preceding_alii, paths_config);
-        cout << "ptr_to_preceding_alii_config_node: " << ptr_to_preceding_alii_config_node->at("dir") << '\n';
         if (!ptr_to_preceding_alii_config_node->contains("children"))
             ptr_to_preceding_alii_config_node->push_back({"children", {}});
         ptr_to_preceding_alii_config_node = &ptr_to_preceding_alii_config_node->at("children");
@@ -207,8 +207,9 @@ std::string cdPathFromDirKwdSequence( const std::vector<std::string>& dir_kwd_se
     if (!parseConfigToJsonObjAndValidate(config_file_abs_path, config))
     {
         cerr << "ERROR: Failed to validate config file.\n";
-        return ".";
+        return "";
     }
+    //! TODO: implement groups later
     //json groups = config.at("groups");
     json current_config = config.at("paths");
     const string cd_root = config.at("root");
@@ -218,16 +219,18 @@ std::string cdPathFromDirKwdSequence( const std::vector<std::string>& dir_kwd_se
         if (!current_config.contains(kwd))
         {
             // TODO: do group check
+            // FOR NOW: return empty string
+            return "";
         }
         if (!current_config.at(kwd).contains("dir"))
         {
             cerr << "ERROR: directory keyword exists but does not have an associated dir.\n";
-            return ".";
+            return "";
         }
         const string npe = current_config.at(kwd).at("dir");
         cd_path += npe + "/";
-        if (!current_config.contains("children"))
-            return cd_root + "/" + cd_path;
+        if (!current_config.at(kwd).contains("children"))
+            break;
         current_config = current_config.at(kwd).at("children");
     }
     return cd_root + "/" + cd_path;

@@ -26,13 +26,6 @@ int main(int argc, char* argv[])
     using namespace std;
     using namespace std::filesystem;
 
-    //! Check if manual should be printed
-    if (argc == 1 || string(argv[1]) == string("-h") || string(argv[1]) == string("--help"))
-    {
-        printManual();
-        return EXIT_SUCCESS;
-    }
-
     //! Get config file path
 #ifdef __linux__
     char username[LOGIN_NAME_MAX];
@@ -53,6 +46,8 @@ int main(int argc, char* argv[])
     if (!is_regular_file(config_file))
     {
         cerr << "Config file does not exist: " << config_file << '\n';
+        cout << '\n';
+        printManual();
         return EXIT_FAILURE;
     }
     //!< DEVONLY
@@ -63,12 +58,33 @@ int main(int argc, char* argv[])
     for (int i=1; i<argc; ++i)
         args.push_back(string(argv[i]));
 
+    //////////////////// CHECKS THAT ARE USUALLY AT THE BEGINNING ////////////////////
+    //! Check if manual should be printed
+    if (argc == 1)
+    {
+        //printManual();
+        cout << "Config\n-------------------------------------------\n";
+        showConfig(config_file, user, args);
+        return EXIT_SUCCESS;
+    }
+    else if (string(argv[1]) == string("-h") || string(argv[1]) == string("--help"))
+    {
+        printManual();
+        return EXIT_SUCCESS;
+    }
+    //////////////////////////////////////////////////////////////////////////////////
+
     const ActionType action = actionTypeFromArgs(args);
     switch (action)
     {
         case CDS:
         {
             const string cd_path = cdPathFromDirKwdSequence(args, config_file);
+            if (cd_path == "")
+            {
+                cerr << "ERROR: directory not found for alias sequence.\n";
+                return EXIT_FAILURE;
+            }
             cout << "cds:" << cd_path;
             break;
         }
@@ -81,7 +97,7 @@ int main(int argc, char* argv[])
                     break;
                 }
             }
-            cout << "Config:\n";
+            cout << "Config\n-------------------------------------------\n";
             showConfig(config_file, user, args);
             break;
         case ADD:
@@ -94,7 +110,7 @@ int main(int argc, char* argv[])
             {
                 cout << "Success: added kwd to config file.\n";
             }
-
+            break;
         default:
             break;
     }

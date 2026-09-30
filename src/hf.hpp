@@ -28,6 +28,7 @@ void showConfig( const std::string& config_file_abs_path
                , const std::string& user
                , const std::vector<std::string>& kwds={});
 
+//!< Returns empty string if no kwd sequence found
 std::string cdPathFromDirKwdSequence( const std::vector<std::string>& dir_kwd_seq
                                     , const std::string& config_file_abs_path );
 
